@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <stdio.h>
 
 template <class T>
 class Transition
@@ -36,8 +37,7 @@ public:
 
 	char* toString() const {
 		char* s = new char[100];
-		sprintf_s(s, 100,
-			"(%s, %c) --> %s",
+        sprintf(s, "(%s, %c) --> %s",
 			(this->getFromState()).c_str(), this->getSymbol(), (this->getToState()).c_str()
 		);
 		return s;

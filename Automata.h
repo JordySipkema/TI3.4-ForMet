@@ -36,7 +36,7 @@ public:
 	}
 
 	void setAlphabet(char* s) {
-		this->setAlphabet(&std::vector<char>(s, s + sizeof s / sizeof s[0]));
+		this->setAlphabet(std::vector<char>(s, s + sizeof s / sizeof s[0]));
 	}
 
 	void setAlphabet(std::vector<char>& symbols) {
@@ -47,18 +47,18 @@ public:
 		return this->symbols;
 	}
 
-	void addTransition(Transition<T>& t) {
+	void addTransition(const Transition<T>& t) {
 		transitions.push_back(t);
 		states.push_back(t.getFromState());
 		states.push_back(t.getToState());
 	}
 
-	void defineAsStartState(T& t) {
+	void defineAsStartState(const T& t) {
 		states.push_back(t);
 		startStates.push_back(t);
 	}
 
-	void defineAsFinalState(T& t) {
+	void defineAsFinalState(const T& t) {
 		states.push_back(t);
 		finalStates.push_back(t);
 	}
