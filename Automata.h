@@ -1,4 +1,5 @@
 #pragma once
+#include <set>
 #include <vector>
 #include <iterator>
 #include "Transition.h"
@@ -6,40 +7,42 @@
 template <class T>
 class Automata
 {
-	std::vector<Transition<T>> transitions;
+	std::set<Transition<T>> transitions;
 
-	std::vector<T> states;
-	std::vector<T> startStates;
-	std::vector<T> finalStates;
-	std::vector<char> symbols;
+	std::set<T> states;
+	//std::set<T> startStates;
+    T startState;
+	std::set<T> finalStates;
+	std::set<char> symbols;
 
-	void init(std::vector<char>& symbols) {
-		transitions = std::vector<Transition<T>>();
-		states = std::vector<T>();
-		startStates = std::vector<T>();
-		finalStates = std::vector<T>();
+	void init(std::set<char>& symbols) {
+        transitions = std::set<Transition<T>>();
+		states = std::set<T>();
+		//startStates = std::set<T>();
+		finalStates = std::set<T>();
 		this->setAlphabet(symbols);
 	}
 
 public:
 	Automata() {
-		init(new std::vector<char>());
+        std::set<char> set = std::set<char>();
+        init(set);
 	}
 
-	Automata(std::vector<char>& symbols) {
+	Automata(std::set<char>& symbols) {
 		init(symbols);
 	}
 
 	Automata(char* s) {
-		std::vector<char> vect(s, s + sizeof s / sizeof s[0]);
+		std::set<char> vect(s, s + sizeof s / sizeof s[0]);
 		init(vect);
 	}
 
 	void setAlphabet(char* s) {
-		this->setAlphabet(std::vector<char>(s, s + sizeof s / sizeof s[0]));
+		this->setAlphabet(std::set<char>(s, s + sizeof s / sizeof s[0]));
 	}
 
-	void setAlphabet(std::vector<char>& symbols) {
+	void setAlphabet(std::set<char>& symbols) {
 		this->symbols = symbols;
 	}
 
@@ -48,19 +51,20 @@ public:
 	}
 
 	void addTransition(const Transition<T>& t) {
-		transitions.push_back(t);
-		states.push_back(t.getFromState());
-		states.push_back(t.getToState());
+		transitions.insert(t);
+		states.insert(t.getFromState());
+		states.insert(t.getToState());
 	}
 
 	void defineAsStartState(const T& t) {
-		states.push_back(t);
-		startStates.push_back(t);
+		states.insert(t);
+		//startStates.insert(t);
+        startState = t;
 	}
 
 	void defineAsFinalState(const T& t) {
-		states.push_back(t);
-		finalStates.push_back(t);
+		states.insert(t);
+		finalStates.insert(t);
 	}
 
 	void printTransitions() {
@@ -68,9 +72,24 @@ public:
 			std::cout << t << "\n";
 		}
 	}
+    
+    bool accept(const std::string input){
+        T state = startState;
+        for (auto it = input.begin(); it < input.end(); ++it){
+            // find transition:
+            for (auto transition : transitions){
+                if (transition.getFromState() == state && transition.getSymbol() == *it){
+                    state = transition.getToState();
+                    break;
+                }
+            }
+        }
+        
+        // End state?
+        return finalStates.find(state) != finalStates.end();
+    }
 
 	bool isDFA() {
-
 	}
 
 

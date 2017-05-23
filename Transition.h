@@ -47,7 +47,34 @@ public:
 		Str << obj.toString();
 		return Str;
 	}
+    
+    bool operator==(const Transition<T>& rhs) const {
+        return (fromState == rhs.getFromState()
+                && toState == rhs.getToState()
+                && symbol == rhs.getSymbol());
+    }
+    
+    bool operator!=(const Transition<T>& rhs) const {
+        return !(this==rhs);
+    }
 
+    bool operator<(const Transition<T>& rhs) const {
+        // TODO: find out if this function can be improved/simplified
+        if (fromState < rhs.getFromState()) return true;
+        if (symbol < rhs.getSymbol() && fromState == rhs.getFromState()) return true;
+        if (toState < rhs.getToState() && symbol == rhs.getSymbol() && fromState == rhs.getFromState()) return true;
+        return false;
+    }
+    bool operator>(const Transition<T>& rhs) const {
+        return rhs < this;
+    }
+    bool operator<=(const Transition<T>& rhs) const {
+        return !(this > rhs);
+    }
+    bool operator>=(const Transition<T>& rhs) const {
+        return !(this < rhs);
+    }
+    
 	~Transition() {
 
 	}
